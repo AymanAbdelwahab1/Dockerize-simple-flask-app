@@ -1,0 +1,17 @@
+pipeline{
+    agent {label 'aws'}
+    
+    stages{
+        stage('Build'){
+            steps{
+                git 'https://github.com/AymanAbdelwahab1/Dockerize-simple-flask-app.git'
+                
+                withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'password', usernameVariable: 'username')]) {
+                    sh 'docker build . -f Dockerfile -t aymanabdelwahab/pyflask:v1.0'
+                    sh 'docker login -u ${username} -p ${password}'
+                    sh 'docker push aymanabdelwahab/pyflask:v1.0'
+                }
+            }
+        }
+    }
+}
